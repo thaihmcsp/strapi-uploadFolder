@@ -11,10 +11,13 @@ module.exports = ({ env }) => ({
       },
       providers: {
         images: {
-          provider: "local",
+          provider: "local-file",
+          options: {
+            path: process.env.SERVER_UPLOAD_PUBLIC,
+          },
         },
         default: {
-          provider: "local-path",
+          provider: "local-file",
           options: {
             path: process.env.FRONTEND_UPLOAD_FOLDER,
           },

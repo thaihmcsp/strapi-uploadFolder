@@ -30,6 +30,18 @@
       "plugin": "upload",
       "required": false,
       "pluginOptions": {}
+    },
+    "thumb": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false,
+      "pluginOptions": {}
     }
   }
 }

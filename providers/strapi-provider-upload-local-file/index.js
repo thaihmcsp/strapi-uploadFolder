@@ -38,9 +38,9 @@ module.exports = {
       delete: (file) => {
         return new Promise((resolve, reject) => {
           const fileName = file.name.split(".")[0];
-          console.log(41, file);
+
           const filePath = path.join(config.path, `/${fileName}${file.ext}`);
-          console.log(43, filePath);
+
           if (!fs.existsSync(filePath)) {
             return resolve("File doesn't exist");
           }

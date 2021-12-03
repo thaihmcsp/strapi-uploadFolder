@@ -38,43 +38,45 @@ module.exports = {
     },
 
     async beforeUpdate(data, model) {
-      let { _id } = data;
-      let existing = await strapi.query("project").findOne({ _id });
-      if (existing) {
-        const oldSlug = existing.slug;
-        const dir = process.env.SERVER_UPLOAD_FOLDER;
-        const folder = path.join(dir, "/" + model.slug);
-        if (oldSlug === model.slug) {
-          model.files.map((ele) => {
-            const name = path.basename(ele.url);
-            const writeLink = path.join(folder, name);
-            const oldname = ele.url.match(/\.(jpe?g|png|webp|svg)$/)
-              ? path.join(process.env.SERVER_UPLOAD_PUBLIC, name)
-              : ele.url;
-            fs.rename(oldname, writeLink, (err) => {
-              if (err) {
-                console.log(err);
-              }
-            });
-          });
-        } else {
-          const oldFolder = path.join(dir, oldSlug);
-          const newFolder = path.join(dir, model.slug);
-          fs.renameSync(oldFolder, newFolder);
-          model.files.map((ele) => {
-            const name = path.basename(ele.url);
-            const writeLink = path.join(folder, name);
-            const oldname = ele.url.match(/\.(jpe?g|png|webp|svg)$/)
-              ? path.join(process.env.SERVER_UPLOAD_PUBLIC, name)
-              : ele.url;
-            if (fs.existsSync(oldname)) {
+      if (model.slug) {
+        let { _id } = data;
+        let existing = await strapi.query("project").findOne({ _id });
+        if (existing) {
+          const oldSlug = existing.slug;
+          const dir = process.env.SERVER_UPLOAD_FOLDER;
+          const folder = path.join(dir, "/" + model.slug);
+          if (oldSlug === model.slug) {
+            model.files.map((ele) => {
+              const name = path.basename(ele.url);
+              const writeLink = path.join(folder, name);
+              const oldname = ele.url.match(/\.(jpe?g|png|webp|svg)$/)
+                ? path.join(process.env.SERVER_UPLOAD_PUBLIC, name)
+                : ele.url;
               fs.rename(oldname, writeLink, (err) => {
                 if (err) {
                   console.log(err);
                 }
               });
-            }
-          });
+            });
+          } else {
+            const oldFolder = path.join(dir, oldSlug);
+            const newFolder = path.join(dir, model.slug);
+            fs.renameSync(oldFolder, newFolder);
+            model.files.map((ele) => {
+              const name = path.basename(ele.url);
+              const writeLink = path.join(folder, name);
+              const oldname = ele.url.match(/\.(jpe?g|png|webp|svg)$/)
+                ? path.join(process.env.SERVER_UPLOAD_PUBLIC, name)
+                : ele.url;
+              if (fs.existsSync(oldname)) {
+                fs.rename(oldname, writeLink, (err) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                });
+              }
+            });
+          }
         }
       }
     },
